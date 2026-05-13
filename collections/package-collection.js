@@ -1,0 +1,248 @@
+const express = require("express");
+const { ObjectId } = require("mongodb");
+const verifyJWT = require("../middlewares/jwtTokenVerify");
+const router = express.Router();
+
+const packageRoute = (packageCollection) => {
+  // get api
+  router.get("/api/tourism/get-package-list", async (req, res) => {
+    try {
+      const getProducts = packageCollection.find();
+      const result = await getProducts.toArray();
+      res.status(200).send({
+        list_data: result,
+        message: "Successful",
+      });
+    } catch (error) {
+      res.status(500).send({ error: "Data can not fetch" });
+    }
+  });
+
+  // post api
+  router.post(
+    "/api/admin/insert-update-package-dest-list",
+    verifyJWT,
+    async (req, res) => {
+      const {
+        _id,
+        package_id,
+        title,
+        duration,
+        location,
+        image,
+        moreImage,
+        price,
+        originalPrice,
+        features,
+        discount,
+        status,
+        user_info,
+        category,
+        details,
+        tour_date,
+      } = req.body;
+
+      const data = {
+        package_id: typeof package_id === "number" ? package_id : null,
+        title: typeof title === "string" ? title : null,
+        duration: typeof duration === "string" ? duration : null,
+        location: typeof location === "string" ? location : null,
+        image: typeof image === "string" ? image : null,
+        moreImage:
+          Array.isArray(moreImage) &&
+          moreImage.every((img) => typeof img === "string")
+            ? moreImage
+            : [],
+        price: typeof price === "number" ? price : null,
+        originalPrice: typeof originalPrice === "number" ? originalPrice : null,
+        features:
+          Array.isArray(features) &&
+          features.every((item) => typeof item === "string")
+            ? features
+            : [],
+        discount: typeof discount === "number" ? discount : null,
+        status: typeof status === "number" ? status : null,
+        user_info: typeof user_info === "string" ? user_info : null,
+        category: typeof category === "string" ? category : null,
+        details:
+          typeof details === "object" &&
+          details !== null &&
+          typeof details.description === "string" &&
+          Array.isArray(details.itinerary) &&
+          details.itinerary.every((item) => typeof item === "string")
+            ? details
+            : null,
+        tour_date: typeof tour_date === "string" ? tour_date : null,
+      };
+
+      if (
+        data.package_id === null ||
+        !data.title ||
+        !data.duration ||
+        !data.location ||
+        !data.image ||
+        data.price === null ||
+        data.originalPrice === null ||
+        data.features.length === 0 ||
+        data.status === null
+      ) {
+        return res
+          .status(400)
+          .send({ error: "Invalid or missing required fields", status: 400 });
+      }
+
+      try {
+        if (_id) {
+          const updateDocId = new ObjectId(_id);
+          data.modifiedAt = new Date();
+          const result = await packageCollection.updateOne(
+            {
+              _id: updateDocId,
+            },
+            {
+              $set: data,
+            },
+          );
+          if (result.modifiedCount === 0) {
+            return res
+              .status(404)
+              .send({ error: "No data modified", status: 404 });
+          }
+          res
+            .status(201)
+            .send({ message: "Update Successful", id: _id, status: 201 });
+        } else {
+          data.createdAt = new Date();
+          const result = await packageCollection.insertOne(data);
+          res.status(200).send({
+            message: "Successful",
+            id: result.insertedId,
+            status: 200,
+          });
+        }
+      } catch (error) {
+        res
+          .status(500)
+          .send({ error: "Failed to create or update", status: 500 });
+      }
+    },
+  );
+
+  // delete api
+  router.delete(
+    "/api/admin/delete-package-list/:id",
+    verifyJWT,
+    async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await packageCollection.deleteOne(query);
+      res.status(200).send({
+        status: 200,
+        message: "Delete successful",
+        deletedCount: result?.deletedCount,
+      });
+    },
+  );
+
+  // update package-dest status
+
+  router.patch(
+    "/api/admin/update-package-status/:id",
+    verifyJWT,
+    async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const { status, user_info } = req.body;
+        const updateDoc = {
+          $set: { status, user_info, modifiedAt: new Date() },
+        };
+
+        const result = await packageCollection.updateOne(filter, updateDoc);
+
+        if (result.matchedCount === 0) {
+          return res.status(404).send({ message: "Not found" });
+        }
+
+        res.status(200).send({
+          status: 200,
+          id: id,
+          status_code: status,
+          message: status === 1 ? "Active successful" : "Inactive successful",
+        });
+      } catch (error) {
+        console.error(error);
+        res
+          .status(500)
+          .send({ message: "An error occurred while updating the status." });
+      }
+    },
+  );
+
+  router.get("/api/tourism/get-package-list/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      let result = null;
+
+      if (ObjectId.isValid(id)) {
+        result = await packageCollection.findOne({
+          _id: new ObjectId(id),
+        });
+      }
+      if (!result) {
+        result = await packageCollection.findOne({
+          _id: id,
+        });
+      }
+      if (!result) {
+        return res.status(404).send({
+          status: 404,
+          message: "Package not found",
+        });
+      }
+      res.status(200).send({
+        status: 200,
+        details_data: result,
+        message: "Successful",
+      });
+    } catch (error) {
+      console.log("ERROR:", error);
+
+      res.status(500).send({
+        status: 500,
+        error: "Failed to fetch package",
+      });
+    }
+  });
+
+  // stock update
+  router.patch(
+    "/api/tourism/get-package-list/stock/:id",
+    verifyJWT,
+    async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updateStock = req.body;
+        const updatedDoc = {
+          $set: {
+            stock: updateStock.stock,
+            modifiedAt: new Date(),
+          },
+        };
+        const result = await packageCollection.updateOne(filter, updatedDoc);
+        res.send({
+          stock: result?.stock,
+          message: "Updated",
+        });
+      } catch (error) {
+        console.error("Error updating stock:", error);
+        res.status(500).send({ error: "Failed to update" });
+      }
+    },
+  );
+
+  return router;
+};
+
+module.exports = packageRoute;
