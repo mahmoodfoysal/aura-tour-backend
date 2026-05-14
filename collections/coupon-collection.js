@@ -143,7 +143,7 @@ const couponRoute = (couponCollection) => {
       try {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
-        // const { flag } = req.body;
+        const { flag } = req.body;
         const updateDoc = {
           $set: { flag: 1, appliedAt: new Date() },
         };
