@@ -1,35 +1,38 @@
-# Penguin - Backend for penguin frontend
+# Aura-Tour - Backend for aura tourism frontend
 
 ## Live Demo
 
-- Live URL: [https://penguin-shopping.web.app/home/](https://penguin-shopping.web.app/home/)
+- Live URL: [https://aura-tour.netlify.app/](https://aura-tour.netlify.app/)
 
 ## Repository
 
-- GitHub Client: [https://github.com/mahmoodfoysal/penguin-frontend](https://github.com/mahmoodfoysal/penguin-frontend)
+- GitHub Client: [https://github.com/mahmoodfoysal/tourism-next-frontend](https://github.com/mahmoodfoysal/tourism-next-frontend)
 -
-- GitHub Backend: [https://github.com/mahmoodfoysal/penguin-backend](https://github.com/mahmoodfoysal/penguin-backend)
+- GitHub Backend: [https://github.com/mahmoodfoysal/aura-tour-backend](https://github.com/mahmoodfoysal/aura-tour-backend)
 
 ## Technologies Used
 
 - Node.js
 - Express.js
 - MongoDB
+- gemini api
 
 ## Key Features
 
 - All API have separate collection
-- Use mongoDB aggregation
 - Admin collection for admin control
 - Token validation by middleware
+- gemini ai for user chat
+- gemini ai for package description generation
+- Coupon code verification.
 
 ## Setup and Installation
 
 ### 1) Clone the repository
 
 ```terminal
-git clone https://github.com/mahmoodfoysal/penguin-backend.git
-cd penguin-backend
+git clone https://github.com/mahmoodfoysal/aura-tour-backend.git
+cd aura-tour-backend
 ```
 
 ### 2) Install dependencies
@@ -46,6 +49,8 @@ Create a `.env` file in the root directory and add:
 
 DB_USER=user_name
 DB_PASS=your_pass
+GEMINI_API_KEY=your_gemini_api_key
+JWT_SECRET=your_jwt_secret
 
 ```
 

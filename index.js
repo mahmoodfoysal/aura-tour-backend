@@ -22,13 +22,13 @@ const galaryRoute = require("./collections/galary-collection.js");
 const userRoute = require("./collections/user-collection.js");
 const geminiRoute = require("./collections/ai.js");
 const port = process.env.PORT || 5000;
-// const dns = require("dns");
+const dns = require("dns");
 
 app.use(cors());
 app.use(express.json());
 app.use("/", geminiRoute);
 
-// dns.setServers(["1.1.1.1", "8.8.8.8"]);
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.da6po2r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, {
