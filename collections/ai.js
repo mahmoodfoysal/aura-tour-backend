@@ -3,6 +3,7 @@ const router = express.Router();
 
 const model = require("../utils/gemini");
 
+// gemini ai chat bot
 router.post("/api/gemini/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -52,15 +53,36 @@ Rules:
   }
 });
 
-router.get("/test-ai", async (req, res) => {
-  try {
-    const result = await model.generateContent("Say hello");
+// gemini api description generator
 
-    res.send(result.response.text());
+router.post("/api/gemini/generate-description", async (req, res) => {
+  try {
+    const { title, category, price } = req.body;
+
+    const prompt = `
+      Generate tour tour package description.
+
+      Product Title: ${title}
+      Category: ${category}
+      Price: ${price}
+
+    `;
+
+    const result = await model.generateContent(prompt);
+
+    const response = result.response.text();
+
+    res.send({
+      success: true,
+      description: response,
+    });
   } catch (error) {
     console.log(error);
 
-    res.send(error.message);
+    res.status(500).send({
+      success: false,
+      message: "Failed to generate description",
+    });
   }
 });
 
