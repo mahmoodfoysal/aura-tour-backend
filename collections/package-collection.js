@@ -36,17 +36,42 @@ const packageRoute = (packageCollection) => {
         features,
         discount,
         status,
+        is_popular,
+        rating,
+        badge,
+        shortDescription,
+        longDescription,
+        bestTimeToVisit,
+        nearbyAttractions,
+        itinerary,
         user_info,
         category,
-        details,
         tour_date,
       } = req.body;
+
+      const validateItinerary = (items) => {
+        return (
+          Array.isArray(items) &&
+          items.every(
+            (item) =>
+              typeof item === "object" &&
+              item !== null &&
+              typeof item.day === "number" &&
+              typeof item.title === "string" &&
+              Array.isArray(item.activities) &&
+              item.activities.every((activity) => typeof activity === "string"),
+          )
+        );
+      };
 
       const data = {
         package_id: typeof package_id === "number" ? package_id : null,
         title: typeof title === "string" ? title : null,
-        duration: typeof duration === "string" ? duration : null,
         location: typeof location === "string" ? location : null,
+        duration: typeof duration === "string" ? duration : null,
+        category: typeof category === "string" ? category : null,
+        status: typeof status === "number" ? status : null,
+        is_popular: typeof is_popular === "number" ? is_popular : 0,
         image: typeof image === "string" ? image : null,
         moreImage:
           Array.isArray(moreImage) &&
@@ -55,24 +80,28 @@ const packageRoute = (packageCollection) => {
             : [],
         price: typeof price === "number" ? price : null,
         originalPrice: typeof originalPrice === "number" ? originalPrice : null,
+        rating: typeof rating === "number" ? rating : null,
+        badge: typeof badge === "string" ? badge : null,
         features:
           Array.isArray(features) &&
           features.every((item) => typeof item === "string")
             ? features
             : [],
-        discount: typeof discount === "number" ? discount : null,
-        status: typeof status === "number" ? status : null,
-        user_info: typeof user_info === "string" ? user_info : null,
-        category: typeof category === "string" ? category : null,
-        details:
-          typeof details === "object" &&
-          details !== null &&
-          typeof details.description === "string" &&
-          Array.isArray(details.itinerary) &&
-          details.itinerary.every((item) => typeof item === "string")
-            ? details
-            : null,
+        discount: typeof discount === "string" ? discount : null,
+        shortDescription:
+          typeof shortDescription === "string" ? shortDescription : null,
+        longDescription:
+          typeof longDescription === "string" ? longDescription : null,
+        bestTimeToVisit:
+          typeof bestTimeToVisit === "string" ? bestTimeToVisit : null,
+        nearbyAttractions:
+          Array.isArray(nearbyAttractions) &&
+          nearbyAttractions.every((attr) => typeof attr === "string")
+            ? nearbyAttractions
+            : [],
+        itinerary: validateItinerary(itinerary) ? itinerary : [],
         tour_date: typeof tour_date === "string" ? tour_date : null,
+        user_info: typeof user_info === "string" ? user_info : null,
       };
 
       if (
@@ -84,7 +113,8 @@ const packageRoute = (packageCollection) => {
         data.price === null ||
         data.originalPrice === null ||
         data.features.length === 0 ||
-        data.status === null
+        data.status === null ||
+        !data.category
       ) {
         return res
           .status(400)

@@ -19,16 +19,17 @@ const couponRoute = require("./collections/coupon-collection.js");
 const blogRoute = require("./collections/blog-collection.js");
 const claimPromoRoute = require("./collections/claim-promo-collection.js");
 const galaryRoute = require("./collections/galary-collection.js");
+const guideRoute = require("./collections/guide-collection.js");
 const userRoute = require("./collections/user-collection.js");
 const geminiRoute = require("./collections/ai.js");
 const port = process.env.PORT || 5000;
-const dns = require("dns");
+// const dns = require("dns");
 
 app.use(cors());
 app.use(express.json());
 app.use("/", geminiRoute);
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+// dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.da6po2r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, {
@@ -69,6 +70,7 @@ async function run() {
     const claimPromoCollection = database.collection("claim-promo-collection");
     const userCollection = database.collection("user-collection");
     const galaryCollection = database.collection("galary-collection");
+    const guideCollection = database.collection("guide-collection");
 
     // ############################################ all database collection write here ###########################################
 
@@ -111,6 +113,9 @@ async function run() {
     app.use("/", userRoute(userCollection));
     // galary collection
     app.use("/", galaryRoute(galaryCollection));
+
+    // guide collection
+    app.use("/", guideRoute(guideCollection));
 
     // ############################################ all collection route write here ###########################################
 

@@ -35,12 +35,14 @@ const galaryRoute = (galaryCollection) => {
             ? more_image
             : null,
         status: typeof status === "number" ? status : null,
+        category: typeof category === "string" ? category : null,
         user_info: typeof user_info === "string" ? user_info : null,
       };
       if (
         !data.title ||
         !data.poster_image ||
         !data.more_image ||
+        !data.category ||
         !data.user_info ||
         data.status === null
       ) {
