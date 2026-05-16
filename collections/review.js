@@ -16,17 +16,17 @@ const reviewRoute = (reviewCollection) => {
   });
 
   // get review by id
-  router.get("/api/tourism/get-review-list/:prod_id", async (req, res) => {
+  router.get("/api/tourism/get-review-list/:package_id", async (req, res) => {
     try {
-      let prod_id = req.params.prod_id;
-      prod_id = Number(prod_id);
-      if (isNaN(prod_id)) {
+      let package_id = req.params.package_id;
+      package_id = Number(package_id);
+      if (isNaN(package_id)) {
         return res.status(400).send({
-          message: "Invalid prod_id",
+          message: "Invalid",
           status: 400,
         });
       }
-      const query = { prod_id: prod_id };
+      const query = { package_id: package_id };
       const result = await reviewCollection.find(query).toArray();
       res.status(200).send({
         list_data: result,

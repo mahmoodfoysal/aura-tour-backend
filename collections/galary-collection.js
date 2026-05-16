@@ -9,8 +9,8 @@ const galaryRoute = (galaryCollection) => {
     "/api/tourism/get-galary-photo-list",
 
     async (req, res) => {
-      const getCouponList = galaryCollection.find();
-      const result = await getCouponList.toArray();
+      const getGalaryList = galaryCollection.find();
+      const result = await getGalaryList.toArray();
       res.send({
         list_data: result,
         message: "Successful",
@@ -23,8 +23,15 @@ const galaryRoute = (galaryCollection) => {
     "/api/tourism/admin/insert-update-galary-photo-list",
     verifyJWT,
     async (req, res) => {
-      const { _id, title, poster_image, more_image, status, user_info } =
-        req.body;
+      const {
+        _id,
+        title,
+        poster_image,
+        more_image,
+        status,
+        category,
+        user_info,
+      } = req.body;
 
       const data = {
         title: typeof title === "string" ? title : null,

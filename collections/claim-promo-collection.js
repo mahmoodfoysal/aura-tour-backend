@@ -6,7 +6,7 @@ const router = express.Router();
 const claimPromoRoute = (claimPromoCollection) => {
   //   post api
   router.post(
-    "/api/penguin/insert-update-clain-promo-list",
+    "/api/tourism/insert-update-clain-promo-list,",
     verifyJWT,
     async (req, res) => {
       const { _id, email } = req.body;

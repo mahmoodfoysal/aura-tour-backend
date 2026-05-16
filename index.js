@@ -6,13 +6,8 @@ const jwt = require("jsonwebtoken");
 
 const { MongoClient, ServerApiVersion, Collection } = require("mongodb");
 require("dotenv").config();
-const bannerRoutes = require("./collections/banner.js");
-const imageCategoryRoute = require("./collections/image-category.js");
-const popularDestinationRoute = require("./collections/popular-destination-collection.js");
 const packageRoute = require("./collections/package-collection.js");
 const adminRoute = require("./collections/admin-controller.js");
-
-const dashboardMenuRoute = require("./collections/dashboard-menu.js");
 const bookingRoute = require("./collections/booking-list.js");
 const reviewRoute = require("./collections/review.js");
 const couponRoute = require("./collections/coupon-collection.js");
@@ -51,18 +46,12 @@ async function run() {
     // ############################################ all database collection write here ###########################################
 
     const database = client.db("aura-tour");
-    const bannerCollection = database.collection("banner");
-    const imgageCategoryCollection = database.collection("image-category");
 
     const popularDestinationCollection = database.collection(
       "popular-dest-collection",
     );
     const packageCollection = database.collection("package-collection");
-
     const adminCollection = database.collection("admin");
-    const menuCollection = database.collection("dashboard-menu");
-    const parentCatCollection = database.collection("parent-category");
-
     const bookingCollection = database.collection("booking-collection");
     const reviewCollection = database.collection("review-collection");
     const couponCollection = database.collection("coupon-collection");
@@ -76,25 +65,13 @@ async function run() {
 
     // ############################################ all collection route write here ###########################################
 
-    // banner
-    app.use("/", bannerRoutes(bannerCollection));
-
-    // image category
-    app.use("/", imageCategoryRoute(imgageCategoryCollection));
-
-    // popular destination
-    app.use("/", popularDestinationRoute(popularDestinationCollection));
-
     // package
     app.use("/", packageRoute(packageCollection));
 
     // admin controller
     app.use("/", adminRoute(adminCollection));
 
-    // dashboard menu
-    app.use("/", dashboardMenuRoute(menuCollection));
-
-    // orders
+    // booking
     app.use("/", bookingRoute(bookingCollection));
 
     // review
@@ -111,6 +88,7 @@ async function run() {
 
     // user
     app.use("/", userRoute(userCollection));
+
     // galary collection
     app.use("/", galaryRoute(galaryCollection));
 

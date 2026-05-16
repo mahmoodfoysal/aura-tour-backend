@@ -7,8 +7,8 @@ const packageRoute = (packageCollection) => {
   // get api
   router.get("/api/tourism/get-package-list", async (req, res) => {
     try {
-      const getProducts = packageCollection.find();
-      const result = await getProducts.toArray();
+      const getPackageList = packageCollection.find();
+      const result = await getPackageList.toArray();
       res.status(200).send({
         list_data: result,
         message: "Successful",
@@ -209,38 +209,31 @@ const packageRoute = (packageCollection) => {
     },
   );
 
+  // package details
+
   router.get("/api/tourism/get-package-list/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      let result = null;
 
-      if (ObjectId.isValid(id)) {
-        result = await packageCollection.findOne({
-          _id: new ObjectId(id),
-        });
-      }
-      if (!result) {
-        result = await packageCollection.findOne({
-          _id: id,
-        });
-      }
+      const query = {
+        _id: new ObjectId(id),
+      };
+
+      const result = await packageCollection.findOne(query);
+
       if (!result) {
         return res.status(404).send({
-          status: 404,
-          message: "Package not found",
+          message: "Not found",
         });
       }
+
       res.status(200).send({
-        status: 200,
         details_data: result,
         message: "Successful",
       });
     } catch (error) {
-      console.log("ERROR:", error);
-
       res.status(500).send({
-        status: 500,
-        error: "Failed to fetch package",
+        error: "Failed to fetch",
       });
     }
   });

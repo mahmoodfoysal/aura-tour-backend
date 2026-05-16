@@ -239,7 +239,7 @@ const bookingRoute = (bookingCollection) => {
 
         res.status(200).send({
           status: 200,
-          message: "Order status updated",
+          message: "Status updated",
           id: result.insertedId,
         });
       } catch (error) {

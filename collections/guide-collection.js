@@ -7,8 +7,8 @@ const guideRoute = (guideCollection) => {
   // get api
   router.get("/api/tourism/get-guide-list", async (req, res) => {
     try {
-      const getProducts = guideCollection.find();
-      const result = await getProducts.toArray();
+      const getGuidList = guideCollection.find();
+      const result = await getGuidList.toArray();
       res.status(200).send({
         list_data: result,
         message: "Successful",
@@ -146,7 +146,7 @@ const guideRoute = (guideCollection) => {
       const result = await guideCollection.deleteOne(query);
       res.status(200).send({
         status: 200,
-        message: "Product delete successful",
+        message: "Delete successful",
         deletedCount: result?.deletedCount,
       });
     },
@@ -187,7 +187,7 @@ const guideRoute = (guideCollection) => {
     },
   );
 
-  // get single products
+  // get single galary
   router.get("/api/tourism/get-guide-list/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -200,7 +200,7 @@ const guideRoute = (guideCollection) => {
 
       if (!result) {
         return res.status(404).send({
-          message: "Product not found",
+          message: "Not found",
         });
       }
 

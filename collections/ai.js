@@ -55,18 +55,26 @@ Rules:
 
 // gemini api description generator
 
-router.post("/api/gemini/generate-description", async (req, res) => {
+router.post("/api/ai/generate-itinerary", async (req, res) => {
   try {
-    const { title, category, price } = req.body;
+    const { destination, days, travelType } = req.body;
 
     const prompt = `
-      Generate tour tour package description.
+You are a professional travel planner.
 
-      Product Title: ${title}
-      Category: ${category}
-      Price: ${price}
+Create a detailed travel itinerary.
 
-    `;
+Destination: ${destination}
+Days: ${days}
+
+Travel Type: ${travelType}
+
+Rules:
+- Create day-by-day plan
+- Keep response organized
+- Suggest activities and food
+- Friendly tone
+`;
 
     const result = await model.generateContent(prompt);
 
@@ -74,7 +82,7 @@ router.post("/api/gemini/generate-description", async (req, res) => {
 
     res.send({
       success: true,
-      description: response,
+      itinerary: response,
     });
   } catch (error) {
     console.log(error);
@@ -85,5 +93,7 @@ router.post("/api/gemini/generate-description", async (req, res) => {
     });
   }
 });
+
+module.exports = router;
 
 module.exports = router;
